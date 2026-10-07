@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Ao Làng LA</title>
+
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+
+</head>
+
+
+<body>
+
+    <div id="access-portal" class="access-portal" role="dialog" aria-modal="true" hidden>
+        <div class="access-portal-panel">
+            <div class="start-menu-kicker">TFT TOURNAMENT</div>
+            <h1>🎮 Ao Làng LA</h1>
+            <p class="access-portal-subtitle">
+                Đăng nhập để vào giải đấu
+            </p>
+
+            <form id="access-login-form" class="access-login-form">
+                <label for="access-email">Tên đăng nhập</label>
+                <input id="access-email" type="text" autocomplete="username" required>
+                <label for="access-password">Mật khẩu</label>
+                <input id="access-password" type="password" autocomplete="current-password" required>
+                <p id="access-login-status" class="viewer-login-status" role="status" aria-live="polite"></p>
+                <button id="access-login-button" type="submit" class="start-menu-primary">Đăng nhập</button>
+            </form>
+        </div>
+    </div>
+
+    <div
+        id="start-menu"
+        class="start-menu"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="start-menu-title"
+    >
+        <div class="start-menu-panel">
+            <div class="start-menu-brand">
+                <div class="start-menu-kicker">TFT TOURNAMENT</div>
+                <h1 id="start-menu-title">🎮 Ao Làng LA</h1>
+                <p class="start-menu-subtitle">Tạo phòng chơi và bắt đầu cuộc chiến!</p>
+            </div>
+
+            <div class="start-menu-controls">
+                <div class="start-menu-section-heading">
+                    <span class="start-menu-section-icon">⚔️</span>
+                    <div>
+                        <h2>Tạo phòng đấu</h2>
+                        <p>Chọn đội hình người chơi</p>
+                    </div>
+                </div>
+
+                <div class="start-menu-field">
+                    <label for="menu-player-count">Số người chơi</label>
+                    <select id="menu-player-count">
+                        <option value="2">2 người chơi</option>
+                        <option value="3">3 người chơi</option>
+                        <option value="4" selected>4 người chơi</option>
+                        <option value="5">5 người chơi</option>
+                        <option value="6">6 người chơi</option>
+                        <option value="7">7 người chơi</option>
+                        <option value="8">8 người chơi</option>
+                    </select>
+                </div>
+
+                <div class="start-menu-field">
+                    <label>Tên người chơi</label>
+                    <div id="menu-player-name-inputs" class="start-menu-player-inputs"></div>
+                </div>
+
+                <button
+                    id="menu-start-button"
+                    type="button"
+                    class="start-menu-primary"
+                >
+                    🚀 Bắt đầu giải mới
+                </button>
+
+                <button
+                    id="continue-tournament-button"
+                    type="button"
+                    class="start-menu-secondary"
+                    hidden
+                >
+                    ▶ Tiếp tục giải đã lưu
+                </button>
+            </div>
+
+            <div class="start-menu-leaderboard" role="region" aria-labelledby="start-menu-leaderboard-title">
+                <div class="start-menu-section-heading leaderboard-heading">
+                    <span class="start-menu-section-icon">🏆</span>
+                    <div>
+                        <h2 id="start-menu-leaderboard-title">BXH giải đấu</h2>
+                        <p id="start-menu-leaderboard-status">Chưa có giải đang diễn ra</p>
+                    </div>
+                </div>
+                <div id="start-menu-leaderboard-content" class="start-menu-leaderboard-content">
+                    <p class="leaderboard-empty">Bắt đầu giải đấu để xem thứ hạng người chơi tại đây.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="shared-viewer-banner" class="shared-viewer-banner" hidden>
+        <span class="shared-viewer-live-dot"></span>
+        <span id="shared-viewer-status">Đang kết nối BXH trực tiếp…</span>
+    </div>
+
+    <main id="viewer-dashboard" class="viewer-dashboard" hidden>
+        <section class="viewer-dashboard-hero">
+            <div>
+                <p class="viewer-eyebrow">AO LÀNG LA · LIVE TOURNAMENT</p>
+                <h1>Bảng xếp hạng</h1>
+                <p class="viewer-dashboard-subtitle">Theo dõi điểm số và thành tích từng vòng đấu.</p>
+            </div>
+            <div class="viewer-live-pill">
+                <span class="shared-viewer-live-dot"></span>
+                CẬP NHẬT TRỰC TIẾP
+            </div>
+        </section>
+
+        <section class="viewer-ranking-section" aria-labelledby="viewer-ranking-title">
+            <div class="viewer-section-heading">
+                <div>
+                    <p class="viewer-eyebrow">CURRENT STANDINGS</p>
+                    <h2 id="viewer-ranking-title">🏆 Xếp hạng hiện tại</h2>
+                </div>
+            </div>
+            <div id="viewer-ranking-content" class="viewer-ranking-content">
+                <p class="viewer-empty-state">Đang tải bảng xếp hạng…</p>
+            </div>
+        </section>
+
+        <section class="viewer-results-section" aria-labelledby="viewer-results-title">
+            <div class="viewer-section-heading">
+                <div>
+                    <p class="viewer-eyebrow">ROUND BY ROUND</p>
+                    <h2 id="viewer-results-title">📈 Thành tích từng người chơi</h2>
+                </div>
+            </div>
+            <div id="viewer-results-content" class="viewer-results-content">
+                <p class="viewer-empty-state">Kết quả từng vòng sẽ hiện tại đây.</p>
+            </div>
+        </section>
+
+        <footer class="viewer-footer">
+            <span>AO LÀNG LA</span>
+            <button
+                id="viewer-dashboard-logout-button"
+                type="button"
+                class="shared-viewer-logout-button"
+            >
+                Đăng xuất
+            </button>
+        </footer>
+    </main>
+
+    <div
+        id="viewer-login-overlay"
+        class="viewer-login-overlay"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="viewer-login-title"
+        hidden
+    >
+        <form id="viewer-login-form" class="viewer-login-panel">
+            <div class="start-menu-kicker">TFT TOURNAMENT</div>
+            <h1 id="viewer-login-title">Đăng nhập xem BXH</h1>
+            <p class="viewer-login-help">
+                Nhập tài khoản xem do chủ giải cung cấp. Tài khoản này chỉ có quyền xem điểm và thứ hạng.
+            </p>
+            <label for="viewer-email">Tên đăng nhập</label>
+            <input
+                id="viewer-email"
+                type="text"
+                autocomplete="username"
+                required
+            >
+            <label for="viewer-password">Mật khẩu</label>
+            <input
+                id="viewer-password"
+                type="password"
+                autocomplete="current-password"
+                required
+            >
+            <p
+                id="viewer-login-status"
+                class="viewer-login-status"
+                role="status"
+                aria-live="polite"
+            ></p>
+            <button id="viewer-login-button" type="submit" class="start-menu-primary">
+                Đăng nhập và xem BXH
+            </button>
+        </form>
+    </div>
+
+    <!-- ========================================
+         HEADER
+    ========================================= -->
+
+    <header>
+
+        <h1>🎮 Ao Làng LA</h1>
+
+        <p>
+            Bảng quản lý giải đấu TFT
+        </p>
+
+        <div class="header-actions">
+            <button
+                id="manager-logout-button"
+                type="button"
+                class="header-action-button"
+            >
+                Đăng xuất
+            </button>
+            <button
+                id="save-tournament-button"
+                type="button"
+                class="header-action-button save-button"
+            >
+                💾 Lưu
+            </button>
+
+            <button
+                id="reset-tournament-button"
+                type="button"
+                class="header-action-button reset-button"
+            >
+                🔄 Reset
+            </button>
+
+            <button
+                id="open-settings-button"
+                type="button"
+                class="header-action-button"
+            >
+                ⚙️ Cài đặt giải đấu
+            </button>
+        </div>
+
+    </header>
+
+
+
+    <!-- ========================================
+         MENU CÀI ĐẶT
+    ========================================= -->
+
+    <div
+        id="settings-overlay"
+        class="settings-overlay"
+    >
+
+        <div class="settings-modal">
+
+            <div class="settings-header">
+
+                <h2>
+                    ⚙️ Cài đặt giải đấu
+                </h2>
+
+                <button
+                    id="close-settings-button"
+                    type="button"
+                    class="close-button"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <div class="setting-group">
+
+                <label for="player-count">
+                    Số người chơi
+                </label>
+
+                <select id="player-count">
+
+                    <option value="2">
+                        2 người
+                    </option>
+
+                    <option value="3">
+                        3 người
+                    </option>
+
+                    <option
+                        value="4"
+                        selected
+                    >
+                        4 người
+                    </option>
+
+                    <option value="5">
+                        5 người
+                    </option>
+
+                    <option value="6">
+                        6 người
+                    </option>
+
+                    <option value="7">
+                        7 người
+                    </option>
+
+                    <option value="8">
+                        8 người
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="setting-group">
+
+                <label>
+                    Tên người chơi
+                </label>
+
+                <div
+                    id="player-name-inputs"
+                    class="player-name-inputs"
+                >
+                </div>
+
+            </div>
+
+            <div class="online-sharing-panel">
+                <h3>🌐 BXH trực tuyến</h3>
+                <p class="online-sharing-help">
+                    Đăng nhập tài khoản quản lý để phát BXH trực tiếp. Bạn bè mở link chỉ có quyền xem.
+                </p>
+                <p id="online-sharing-status" class="online-sharing-status" role="status">
+                    Chưa kết nối
+                </p>
+                <label for="online-owner-email">Email quản lý</label>
+                <input
+                    id="online-owner-email"
+                    class="online-sharing-input"
+                    type="email"
+                    autocomplete="username"
+                    placeholder="you@example.com"
+                >
+                <label for="online-owner-password">Mật khẩu</label>
+                <input
+                    id="online-owner-password"
+                    class="online-sharing-input"
+                    type="password"
+                    autocomplete="current-password"
+                    placeholder="Mật khẩu Supabase"
+                >
+                <div class="online-sharing-actions">
+                    <button id="online-login-button" type="button">Đăng nhập</button>
+                    <button id="online-logout-button" type="button" hidden>Đăng xuất</button>
+                </div>
+                <button
+                    id="online-enable-sharing-button"
+                    class="online-publish-button"
+                    type="button"
+                >
+                    📡 Bật BXH trực tiếp
+                </button>
+                <button
+                    id="online-copy-share-link-button"
+                    class="online-copy-button"
+                    type="button"
+                    hidden
+                >
+                    🔗 Sao chép link xem BXH
+                </button>
+                <p class="online-sharing-note">
+                    Cần cấu hình Supabase trong data/config.js và chạy supabase/schema.sql. Xem ONLINE_SETUP.md để thiết lập.
+                </p>
+            </div>
+
+
+            <div class="settings-actions">
+
+                <button
+                    id="start-tournament-button"
+                    type="button"
+                    class="primary-button"
+                >
+                    🚀 Bắt đầu giải đấu
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ========================================
+         MAIN
+    ========================================= -->
+
+    <main>
+
+
+        <!-- ====================================
+             THÔNG TIN GIẢI ĐẤU
+        ===================================== -->
+
+        <section id="tournament-info">
+
+    <div class="info-item">
+
+        <span>🎮 TÊN GIẢI</span>
+
+        <strong>
+            GIẢI CỎ VUI VẺ
+        </strong>
+
+    </div>
+
+
+    <div class="info-item">
+
+        <span>😎 PHONG CÁCH</span>
+
+        <strong>
+            Đánh bài thoải mái
+        </strong>
+
+    </div>
+
+
+    <div class="info-item">
+
+        <span>🔥 TINH THẦN</span>
+
+        <strong>
+            Chơi vui là chính
+        </strong>
+
+    </div>
+
+
+    <div class="info-item">
+
+        <span>🏆 MỤC TIÊU</span>
+
+        <strong>
+            Ăn Top 1 là được
+        </strong>
+
+    </div>
+
+</section>
+
+<div
+    id="championship-status"
+    class="championship-status"
+>
+    Chưa có người vô địch.
+</div>
+
+
+        <!-- ====================================
+             KHU VỰC CHÍNH
+        ===================================== -->
+
+        <!-- ====================================
+     TRẠNG THÁI GIẢI ĐẤU
+===================================== -->
+
+<section id="championship-top">
+
+    <div class="championship-top-left">
+
+        <span class="championship-icon">
+            🏆
+        </span>
+
+        <div>
+
+            <span class="championship-label">
+                TRẠNG THÁI GIẢI ĐẤU
+            </span>
+
+            <strong id="championship-top-status">
+                Đang thi đấu
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <div
+        id="championship-top-player"
+        class="championship-top-player"
+    >
+        Chưa có nhà vô địch
+    </div>
+
+</section>
+        <div class="tournament-layout">
+
+
+            <!-- =================================
+                 CỘT TRÁI
+            ================================== -->
+
+            <div class="tournament-main">
+
+
+                <!-- =============================
+                     NGƯỜI CHƠI
+                ============================== -->
+
+                <section id="players-section">
+
+                    <h2>
+                        👤 Người chơi
+                    </h2>
+
+                    <div id="players-list">
+                    </div>
+
+                </section>
+
+
+
+                <!-- =============================
+                     BẢNG ĐIỂM
+                ============================== -->
+
+                <section id="score-section">
+
+                    <h2>
+                        📊 Bảng điểm
+                    </h2>
+
+
+                    <div id="total-score-board">
+                    </div>
+
+
+                    <div id="score-board">
+                    </div>
+
+                </section>
+
+
+            </div>
+
+
+
+            <!-- =================================
+                 CỘT PHẢI
+            ================================== -->
+
+            <aside class="tournament-sidebar">
+
+
+                <!-- =============================
+                     XẾP HẠNG
+                ============================== -->
+
+                <section id="ranking-section">
+
+                    <h2>
+                        🏆 Bảng xếp hạng
+                    </h2>
+
+
+                    <div id="ranking-board">
+                    </div>
+
+                </section>
+
+
+
+                <!-- =============================
+                     VÔ ĐỊCH
+                ============================== -->
+
+
+                </section>
+
+
+            </aside>
+
+
+        </div>
+
+
+    </main>
+
+
+
+<!-- ========================================
+     JAVASCRIPT
+======================================== -->
+
+<script
+    type="module"
+    src="js/app.js">
+</script>
+
+</body>
+
+</html>
